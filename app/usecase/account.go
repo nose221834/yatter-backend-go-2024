@@ -62,3 +62,28 @@ func (a *account) Create(ctx context.Context, username, password string) (*Creat
 		Account: acc,
 	}, nil
 }
+
+func (a *account) FindByUsername(ctx context.Context, username string) (*GetAccountDTO, error) {
+	tx, err := a.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+
+		tx.Commit()
+	}()
+
+	acc, err := a.accountRepo.FindByUsername(ctx, username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &GetAccountDTO{
+		Account: acc,
+	}, nil
+}
