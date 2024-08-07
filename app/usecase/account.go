@@ -10,6 +10,7 @@ import (
 
 type Account interface {
 	Create(ctx context.Context, username, password string) (*CreateAccountDTO, error)
+	FindByUsername(ctx context.Context, username string) (*GetAccountDTO, error)
 }
 
 type account struct {
