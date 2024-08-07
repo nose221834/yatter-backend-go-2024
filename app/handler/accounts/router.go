@@ -21,5 +21,8 @@ func NewRouter(u usecase.Account) http.Handler {
 	}
 	r.Post("/", h.Create)
 
+	// FindByUsername エンドポイントを追加
+	r.Get("/{username}", h.FindByUsername)
+
 	return r
 }

@@ -10,6 +10,7 @@ import (
 
 type Account interface {
 	Create(ctx context.Context, username, password string) (*CreateAccountDTO, error)
+	FindByUsername(ctx context.Context, username string) (*GetAccountDTO, error)
 }
 
 type account struct {
@@ -59,6 +60,31 @@ func (a *account) Create(ctx context.Context, username, password string) (*Creat
 	}
 
 	return &CreateAccountDTO{
+		Account: acc,
+	}, nil
+}
+
+func (a *account) FindByUsername(ctx context.Context, username string) (*GetAccountDTO, error) {
+	tx, err := a.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+
+		tx.Commit()
+	}()
+
+	acc, err := a.accountRepo.FindByUsername(ctx, username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &GetAccountDTO{
 		Account: acc,
 	}, nil
 }
