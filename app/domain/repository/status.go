@@ -8,4 +8,5 @@ import (
 // これは、絶対に変えたくない関数の形
 type Status interface {
 	Create(ctx context.Context, status *object.Status) error
+	Find(ctx context.Context, id int) (*object.Status, error)
 }
