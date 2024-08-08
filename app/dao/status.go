@@ -22,8 +22,9 @@ func NewStatus(db *sqlx.DB) *status {
 }
 
 // (a* status) →　登録する相手　→statusの一部として振る舞う
-func (s *status) AddStatus(ctx context.Context, contents *object.Status) error {
-	_, err := s.db.Exec("insert into status (content,CreatedAt) values (? ?)", contents.Content, contents.CreatedAt)
+func (s *status) AddStatus(ctx context.Context, status *object.Status) error {
+	_, err := s.db.Exec("insert into status (AccountID,Content,CreatedAt) values (?,?,?)",
+		status.AccountID, status.Content, status.CreatedAt)
 	if err != nil {
 		return fmt.Errorf("failed to insert status: %w", err)
 	}

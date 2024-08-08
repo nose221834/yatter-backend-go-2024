@@ -9,7 +9,7 @@ import (
 )
 
 type Status interface {
-	AddStatus(ctx context.Context, contents *object.Status) (*AddStatusDTO, error)
+	AddStatus(ctx context.Context, content string, id int) (*AddStatusDTO, error)
 }
 
 type status struct {
@@ -30,9 +30,8 @@ func NewStatus(db *sqlx.DB, statusRepo repository.Status) *status {
 	}
 }
 
-func (s *status) AddStatus(ctx context.Context, contents *object.Status) (*AddStatusDTO, error) {
-	content := contents.Content
-	sta := object.NewStatus(content)
+func (s *status) AddStatus(ctx context.Context, content string, id int) (*AddStatusDTO, error) {
+	status := object.NewStatus(content, id)
 
 	tx, err := s.db.Beginx()
 	if err != nil {
@@ -48,11 +47,11 @@ func (s *status) AddStatus(ctx context.Context, contents *object.Status) (*AddSt
 	}()
 
 	// domainを叩いている？daoには直接アクセスしていないらしい
-	if err := s.statusRepo.AddStatus(ctx, contents); err != nil {
+	if err := s.statusRepo.AddStatus(ctx, status); err != nil {
 		return nil, err
 	}
 
 	return &AddStatusDTO{
-		Status: sta,
+		Status: status,
 	}, nil
 }
