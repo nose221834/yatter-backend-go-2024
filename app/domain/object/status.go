@@ -10,10 +10,10 @@ type Status struct {
 	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at"`
 }
 
-func NewStatus(content string, id int) *Status {
+func NewStatus(content string, account_id int) *Status {
 	return &Status{
 		Content:   content,
-		AccountID: id,
+		AccountID: account_id,
 		CreatedAt: time.Now(),
 	}
 }

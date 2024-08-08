@@ -6,5 +6,5 @@ import (
 )
 
 type Status interface {
-	AddStatus(ctx context.Context, status *object.Status) error
+	Create(ctx context.Context, status *object.Status) error
 }
