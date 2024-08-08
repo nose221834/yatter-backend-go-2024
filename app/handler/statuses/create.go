@@ -1,7 +1,7 @@
 package statuses
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"yatter-backend-go/app/domain/auth"
 )
@@ -12,11 +12,27 @@ type AddRequest struct {
 }
 
 // Handle request for `POST /v1/statuses`
-func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
+func (h *handler) AddStatus(w http.ResponseWriter, r *http.Request) {
+	var req AddRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 
-	account_info := auth.AccountOf(r.Context()) // 認証情報を取得する
+	ctx := r.Context()
+	account_info := auth.AccountOf(ctx) // 認証情報を取得する
+	id := int(account_info.ID)
 
-	panic(fmt.Sprintf("Must Implement Status Creation And Check Acount Info %v", account_info))
+	dto, err := h.su.AddStatus(ctx, req.Status, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(dto.Status); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// panic(fmt.Sprintf("Must Implement Status Creation And Check Acount Info %v", account_info))
 
 }
