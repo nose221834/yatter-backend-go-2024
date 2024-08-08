@@ -12,7 +12,7 @@ type AddRequest struct {
 }
 
 // Handle request for `POST /v1/statuses`
-func (h *handler) AddStatus(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	var req AddRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -20,9 +20,8 @@ func (h *handler) AddStatus(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	account_info := auth.AccountOf(ctx) // 認証情報を取得する
-	id := int(account_info.ID)
 
-	dto, err := h.su.AddStatus(ctx, req.Status, id)
+	dto, err := h.su.Create(ctx, req.Status, int(account_info.ID))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -32,7 +31,4 @@ func (h *handler) AddStatus(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	// panic(fmt.Sprintf("Must Implement Status Creation And Check Acount Info %v", account_info))
-
 }
