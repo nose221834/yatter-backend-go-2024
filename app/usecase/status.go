@@ -21,6 +21,10 @@ type CreateStatusDTO struct {
 	Status *object.Status
 }
 
+type FindStatusDTO struct {
+	Status *object.Status
+}
+
 var _ Status = (*status)(nil)
 
 func NewStatus(db *sqlx.DB, statusRepo repository.Status) *status {
@@ -53,6 +57,31 @@ func (s *status) Create(ctx context.Context, content string, account_id int) (*C
 	}
 
 	return &CreateStatusDTO{
+		Status: status,
+	}, nil
+}
+
+func (s *status) Find(ctx context.Context, id int) (*FindStatusDTO, error) {
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+
+		tx.Commit()
+	}()
+
+	status, err := s.statusRepo.Find(ctx, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &FindStatusDTO{
 		Status: status,
 	}, nil
 }
