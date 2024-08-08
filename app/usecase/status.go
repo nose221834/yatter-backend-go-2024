@@ -61,7 +61,7 @@ func (s *status) Create(ctx context.Context, content string, account_id int) (*C
 	}, nil
 }
 
-func (s *status) Find(ctx context.Context, id int) (*FindStatusDTO, error) {
+func (s *status) FindById(ctx context.Context, id int) (*FindStatusDTO, error) {
 	tx, err := s.db.Beginx()
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (s *status) Find(ctx context.Context, id int) (*FindStatusDTO, error) {
 		tx.Commit()
 	}()
 
-	status, err := s.statusRepo.Find(ctx, id)
+	status, err := s.statusRepo.FindById(ctx, id)
 
 	if err != nil {
 		return nil, err

@@ -34,7 +34,7 @@ func (s *status) Create(ctx context.Context, status *object.Status) error {
 	return nil
 }
 
-func (s *status) Find(ctx context.Context, id int) (*object.Status, error) {
+func (s *status) FindById(ctx context.Context, id int) (*object.Status, error) {
 	entity := new(object.Status)
 	err := s.db.QueryRowxContext(ctx, "select * from status where id = ?", id).StructScan(entity)
 	if err != nil {
