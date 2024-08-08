@@ -17,21 +17,21 @@ type (
 	}
 )
 
-var _ repository.Status = (*status)(nil)
+var _ repository.Timeline = (*timeline)(nil)
 
 // *statusを返す→*statusに紐づいているCreateやFindも返している？
-func NewTimeline(db *sqlx.DB) *status {
-	return &status{db: db}
+func NewTimeline(db *sqlx.DB) *timeline {
+	return &timeline{db: db}
 }
 
-func (t *timeline) Public(ctx context.Context, id int) (*object.Timeline, error) {
+func (t *timeline) Public(ctx context.Context, limit int) (*object.Timeline, error) {
 	entity := new(object.Timeline)
-	err := t.db.QueryRowxContext(ctx, "select * from status order by id desc limit ?", id).StructScan(entity)
+	err := t.db.QueryRowxContext(ctx, "select * from status order by id desc limit ?", limit).StructScan(entity)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("failed to find status from db %w", err)
+		return nil, fmt.Errorf("failed to find timeline from db %w", err)
 	}
 	return entity, nil
 }
