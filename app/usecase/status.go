@@ -10,6 +10,7 @@ import (
 
 type Status interface {
 	Create(ctx context.Context, content string, account_id int) (*CreateStatusDTO, error)
+	FindById(ctx context.Context, id int) (*FindStatusDTO, error)
 }
 
 type status struct {
