@@ -8,10 +8,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type FindRequest struct {
-	Username string
-}
-
 func (h *handler) FindById(w http.ResponseWriter, r *http.Request) {
 
 	// URLパラメータからusernameを取得
