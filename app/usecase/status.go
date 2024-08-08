@@ -47,6 +47,7 @@ func (s *status) Create(ctx context.Context, content string, account_id int) (*C
 	}()
 
 	// domainを叩いている？daoには直接アクセスしていないらしい
+	// domainに依存させることで、保守性を上げている
 	if err := s.statusRepo.Create(ctx, status); err != nil {
 		return nil, err
 	}
