@@ -19,6 +19,7 @@ type (
 
 var _ repository.Status = (*status)(nil)
 
+// *statusを返す→*statusに紐づいているCreateやFindも返している？
 func NewStatus(db *sqlx.DB) *status {
 	return &status{db: db}
 }
