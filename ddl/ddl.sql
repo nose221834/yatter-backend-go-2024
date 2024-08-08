@@ -11,10 +11,10 @@ CREATE TABLE IF NOT EXISTS `account` (
 );
 
 CREATE TABLE IF NOT EXISTS `status` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `AccountID` INT NOT NULL,
-  `URL` VARCHAR(255),
-  `Content` TEXT NOT NULL,
-  `CreatedAt` DATETIME,
-  PRIMARY KEY (`ID`)
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `account_id` INT NOT NULL,
+  `url` VARCHAR(255),
+  `content` TEXT NOT NULL,
+  `created_at` DATETIME,
+  PRIMARY KEY (`id`)
 );

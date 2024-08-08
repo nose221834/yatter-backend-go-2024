@@ -10,6 +10,7 @@ import (
 
 type Status interface {
 	Create(ctx context.Context, content string, account_id int) (*CreateStatusDTO, error)
+	FindById(ctx context.Context, id int) (*FindStatusDTO, error)
 }
 
 type status struct {
@@ -18,6 +19,10 @@ type status struct {
 }
 
 type CreateStatusDTO struct {
+	Status *object.Status
+}
+
+type FindStatusDTO struct {
 	Status *object.Status
 }
 
@@ -47,11 +52,37 @@ func (s *status) Create(ctx context.Context, content string, account_id int) (*C
 	}()
 
 	// domainを叩いている？daoには直接アクセスしていないらしい
+	// domainに依存させることで、保守性を上げている
 	if err := s.statusRepo.Create(ctx, status); err != nil {
 		return nil, err
 	}
 
 	return &CreateStatusDTO{
+		Status: status,
+	}, nil
+}
+
+func (s *status) FindById(ctx context.Context, id int) (*FindStatusDTO, error) {
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+
+		tx.Commit()
+	}()
+
+	status, err := s.statusRepo.FindById(ctx, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &FindStatusDTO{
 		Status: status,
 	}, nil
 }
