@@ -26,6 +26,10 @@ func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
 
 	dto, err := h.tu.Public(ctx, limit)
 	if err != nil {
+		if dto == nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

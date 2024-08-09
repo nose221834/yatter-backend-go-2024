@@ -40,6 +40,10 @@ func (t *timeline) Public(ctx context.Context, limit int) (*object.Timeline, err
 		timeline = append(timeline, status)
 	}
 
+	if timeline == nil {
+		return nil, fmt.Errorf("not found timeline from db ")
+	}
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
